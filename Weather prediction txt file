@@ -1,0 +1,256 @@
+Weather Prediction using Machine Learning Algorithms
+
+import pandas as pd
+import numpy as np
+from matplotlib import pyplot as plt
+import seaborn as sns
+data = pd.read_csv('/content/seattle-weather.csv')
+print(data.shape)
+data=data.drop('date',axis=1)
+print(data.head(15))
+print(data.columns)
+
+print(data['weather'].value_counts())
+
+x = data.drop('weather',axis=1)
+print(x.shape)
+y = data['weather']
+print(y.shape)
+print(type (x))
+print(type(y))
+
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+y = le.fit_transform(y)
+print(y)
+
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.20,random_state=1)
+print(x_train.shape)
+print(x_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+check_nan = x_test.isnull().values.any()
+print(check_nan)
+
+#GaussianNaiveBayes
+
+from sklearn.naive_bayes import GaussianNB
+nb=GaussianNB()
+print(nb.fit(x_train,y_train))
+y_pred1=nb.predict(x_test)
+result1=pd.DataFrame({'Actual':y_test,'Predictions':y_pred1})
+print(result1.head())
+
+#ploting confusion matrix
+
+from sklearn.metrics import confusion_matrix,ConfusionMatrixDisplay
+print(confusion_matrix(y_test,y_pred1))
+cm=confusion_matrix(y_test,y_pred1)
+cm_disp = ConfusionMatrixDisplay(confusion_matrix = cm, display_labels = nb.classes_)
+cm_disp.plot()
+print(plt.show())
+
+#Classification report precision, recall, f1-score, accuracy
+
+from sklearn.metrics import classification_report
+print(classification_report(y_test,y_pred1))
+
+#Accuracy
+
+from sklearn.metrics import accuracy_score
+print(accuracy_score(y_test,y_pred1))
+
+#DecisionTreeClassifier
+
+from sklearn.tree import DecisionTreeClassifier
+classifier=DecisionTreeClassifier()
+print(classifier.fit(x_train,y_train))
+y_pred2=classifier.predict(x_test)
+result2=pd.DataFrame({'Actual':y_test,'Prediction':y_pred2})
+print(result2.head())
+
+#ploting confusion matrix
+
+from sklearn.metrics import confusion_matrix,ConfusionMatrixDisplay
+print(confusion_matrix(y_test,y_pred2))
+confusion_matrix=confusion_matrix(y_test,y_pred2)
+cm_display = ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = classifier.classes_)
+cm_display.plot()
+print(plt.show())
+
+#Classification report precision, recall, f1-score, accuracy
+
+from sklearn.metrics import classification_report
+print(classification_report(y_test,y_pred2))
+
+#Accuracy
+
+from sklearn.metrics import accuracy_score
+print(accuracy_score(y_test,y_pred2))
+
+#RandomForestClassifier
+
+from sklearn.ensemble import RandomForestClassifier
+rf=RandomForestClassifier()
+print(rf.fit(x_train,y_train))
+
+#Actual and Predicted values
+
+y_pred3 = rf.predict(x_test)
+result3=pd.DataFrame({'Actual':y_test,'Prediction':y_pred3})
+print(result3.head())
+
+
+#ploting confusion matrix
+
+from sklearn.metrics import confusion_matrix,ConfusionMatrixDisplay
+print(confusion_matrix(y_test,y_pred3))
+confusion_matrix=confusion_matrix(y_test,y_pred3)
+cm_display = ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = rf.classes_)
+cm_display.plot()
+print(plt.show())
+
+#Classification report precision, recall, f1-score, accuracy
+
+from sklearn.metrics import classification_report
+print(classification_report(y_test,y_pred3))
+
+#Accuracy
+
+from sklearn.metrics import accuracy_score
+print(accuracy_score(y_test,y_pred3))
+
+#Feature Extraction
+
+feature_importances=pd.DataFrame(rf.feature_importances_,index=x_train.columns,columns=['importance']).sort_values('importance')
+print(feature_importances)
+
+#KNeighborsClassifier(KNN)
+
+from sklearn.neighbors import KNeighborsClassifier
+model=KNeighborsClassifier(n_neighbors=8)
+print(model.fit(x_train,y_train))
+
+#Actual and Predicted
+
+y_pred4=model.predict(x_test)
+result4=pd.DataFrame({'Actual':y_test,'Prediction':y_pred4})
+print(result4.head())
+
+# ploting confusing matrix
+
+from sklearn.metrics import confusion_matrix,ConfusionMatrixDisplay
+print(confusion_matrix(y_test,y_pred4))
+confusion_matrix=confusion_matrix(y_test,y_pred4)
+cm_display = ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels =model.classes_)
+cm_display.plot()
+print(plt.show())
+
+#Classification report precision, recall, f1-score, accuracy
+
+from sklearn.metrics import classification_report
+print(classification_report(y_test,y_pred4))
+
+#Accuracy
+
+from sklearn.metrics import accuracy_score
+print(accuracy_score(y_test,y_pred4))
+
+#LogisticRegression
+
+from sklearn.linear_model import LogisticRegression
+lr=LogisticRegression(solver='liblinear')
+print(lr.fit(x_train,y_train))
+
+#acutal and predicted
+
+y_pred5=lr.predict(x_test)
+result5=pd.DataFrame({'Actual':y_test,'Prediction':y_pred5})
+print(result5.head())
+
+#ploting confusion matrix
+
+from sklearn.metrics import confusion_matrix,ConfusionMatrixDisplay
+print(confusion_matrix(y_test,y_pred5))
+confusion_matrix=confusion_matrix(y_test,y_pred5)
+cm_display = ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels =lr.classes_)
+cm_display.plot()
+print(plt.show())
+
+#Classification report precision, recall, f1-score, accuracy
+
+from sklearn.metrics import classification_report
+print(classification_report(y_test,y_pred5))
+
+# Accuracy
+
+from sklearn.metrics import accuracy_score
+print(accuracy_score(y_test,y_pred5))
+
+
+#XGBClassifier (Extreme Gradient Boosting)
+
+from xgboost import XGBClassifier
+xgb=XGBClassifier()
+print(xgb.fit(x_train,y_train))
+
+# acutal and predicted
+
+y_pred6=xgb.predict(x_test)
+result6=pd.DataFrame({'Actual':y_test,'Prediction':y_pred6})
+print(result6.head())
+
+#ploting confusion matrix
+
+
+from sklearn.metrics import confusion_matrix,ConfusionMatrixDisplay
+print(confusion_matrix(y_test,y_pred6))
+confusion_matrix=confusion_matrix(y_test,y_pred6)
+cm_display = ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels =xgb.classes_)
+cm_display.plot()
+print(plt.show())
+
+#Classification report precision, recall, f1-score, accuracy
+
+from sklearn.metrics import classification_report
+print(classification_report(y_test,y_pred6))
+
+
+#Accuracy
+
+from sklearn.metrics import accuracy_score
+print(accuracy_score(y_test,y_pred6))
+
+#Feature Extraction
+
+feature_importances=pd.DataFrame(xgb.feature_importances_,index=x_train.columns,columns=['importance']).sort_values('importance')
+print(feature_importances)
+
+X = pd.DataFrame(data,columns=['temp_min','temp_max','precipitation'])
+
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
+from xgboost import XGBClassifier
+xgb=XGBClassifier()
+print(xgb.fit(X_train,y_train))
+y_pred7 = xgb.predict(X_test)
+
+result7=pd.DataFrame({'Actual':y_test,'Prediction':y_pred7})
+print(result7.head())
+
+from sklearn.metrics import confusion_matrix,ConfusionMatrixDisplay,classification_report
+print(confusion_matrix(y_test,y_pred7))
+confusion_matrix=confusion_matrix(y_test,y_pred7)
+cm_display = ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = xgb.classes_)
+cm_display.plot()
+plt.show()
+print(classification_report(y_test, y_pred7))
+
+
+from sklearn.metrics import accuracy_score
+print(accuracy_score(y_test,y_pred7))
+
+
+
